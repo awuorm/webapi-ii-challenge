@@ -103,7 +103,7 @@ function handleAllGetPosts(req, res) {
       console.log("response from  getposts endpoint", data);
     })
     .catch(error => {
-      res.json({ errorMessage: error });
+      res.status(500).json({ error: "The posts information could not be retrieved." });
       console.log("error from posts endpoint", error);
     });
 }
