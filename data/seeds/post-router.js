@@ -49,8 +49,13 @@ function handleGetPostByID(req, res) {
   const { id } = req.params;
   db.findById(id)
     .then(data => {
-      res.json(data);
-      console.log("response from get post by id", data);
+         if (data.length === Number(0)) {
+            console.log("response from get post by id", data);
+            res.status(404).json({ message: "The post with the specified ID does not exist." });
+          } else if (data.length !== Number(0)) {
+            res.status(200).json(data);
+            console.log("response from get post by id", data);
+          }
     })
     .catch(error => {
       res.json({ errorMessaga: error });
