@@ -78,12 +78,21 @@ function handlePostComments(req, res) {
   };
   db.insertComment(comment)
     .then(data => {
-      res.json(data);
+      res.status(201).json({success: comment});
       console.log("response from  post comments endpoint", data);
     })
     .catch(error => {
-      res.json({ errorMessage: error });
-      console.log("error from post comments endpoint", error);
+        if(comment.text === undefined) {
+            console.log("error from posts endpoint", error);
+            res.status(400).json({ errorMessage: "Please provide text for the comment." });
+        }
+       else if (error.code === "SQLITE_CONSTRAINT") {
+            console.log("error from posts endpoint", error);
+            res.status(404).json({ message: "The post with the specified ID does not exist." });
+          } else if (error.code !== "SQLITE_CONSTRAINT") {
+            res.status(500).json({ error: "There was an error while saving the comment to the database" });
+            console.log("error from posts endpoint", error);
+          }
     });
 }
 
@@ -106,16 +115,16 @@ function handlePosts(req, res) {
   };
   db.insert(post)
     .then(data => {
-      res.json(data);
+      res.status(201).json({success:post});
       console.log("response from posts endpoint", data);
     })
     .catch(error => {
       if (post.title || post.contents === undefined) {
-        res.json({
+        res.status(400).json({
           errorMessage: "Please provide title and contents for the post."
         });
       } else if (post.title || post.contents !== undefined) {
-        res.json({ errorMessage: error });
+        res.status(500).json({ error: "There was an error while saving the post to the database" });
         console.log("error from posts endpoint", error);
       }
     });
