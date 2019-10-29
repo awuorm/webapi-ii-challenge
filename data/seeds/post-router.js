@@ -25,10 +25,15 @@ function handlePostEdit(req, res) {
           .status(404)
           .json({ message: "The post with the specified ID does not exist." });
       } else if (data !== Number(0)) {
-        if (post.title || post.contents === undefined) {
+        if (post.title === undefined) {
           console.log("response from get post by id", data);
           res.status(400).json({
-            errorMessage: "Please provide title and contents for the post."
+            errorMessage: "Please provide title  for the post."
+          });
+        } else if (post.contents === undefined) {
+          console.log("response from get post by id", data);
+          res.status(400).json({
+            errorMessage: "Please provide  contents for the post."
           });
         } else if (post.title && post.contents !== undefined) {
           res.status(200).json({ sucess: " post edited", edited: post });
@@ -172,9 +177,15 @@ function handlePosts(req, res) {
       console.log("response from posts endpoint", data);
     })
     .catch(error => {
-      if (post.title || post.contents === undefined) {
+      if (post.title === undefined) {
+        //This conditional doesn't work properly
         res.status(400).json({
-          errorMessage: "Please provide title and contents for the post."
+          errorMessage: "Please provide title  for the post."
+        });
+      } else if (post.contents === undefined) {
+        //This conditional doesn't work properly
+        res.status(400).json({
+          errorMessage: "Please provide contents for the post."
         });
       } else if (post.title || post.contents !== undefined) {
         res.status(500).json({
